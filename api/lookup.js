@@ -12,18 +12,23 @@ export default async function handler(req, res) {
 
     const upstreamUrl = `https://vvvin-ng.vercel.app/lookup?rc=${encodeURIComponent(rc)}`;
     const upstreamRes = await fetch(upstreamUrl);
+    const text = await upstreamRes.text();
 
-    const status = upstreamRes.status;
-    const contentType = upstreamRes.headers.get("content-type") || "application/json";
-    const bodyText = await upstreamRes.text();
+    let body;
+    try {
+      // try to parse JSON (some responses are raw text)
+      body = JSON.parse(text);
+    } catch {
+      body = { raw: text };
+    }
 
-    // Add credit headers
-    res.setHeader("X-API-BY", "MYNK");
-    res.setHeader("X-CONTACT", "@mynk_mynk_mynk");
+    // 🔽 add your credit tag here
+    body.api_by = "MYNK";
+    body.telegram = "@mynk_mynk_mynk";
 
-    res.status(status);
-    res.setHeader("Content-Type", contentType);
-    res.send(bodyText);
+    res.setHeader("Content-Type", "application/json");
+    res.status(upstreamRes.status).json(body);
+
   } catch (err) {
     res.status(500).json({ error: "Internal server error", detail: err.toString() });
   }
