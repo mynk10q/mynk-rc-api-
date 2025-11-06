@@ -1,0 +1,10 @@
+{
+  "name": "mynk-rc-api",
+  "version": "1.0.0",
+  "description": "Vehicle lookup proxy API by MYNK (@mynk_mynk_mynk)",
+  "type": "module",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {}
+}
